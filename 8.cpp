@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 #include <string>
 #include <fstream>
 using namespace std;
@@ -21,6 +20,7 @@ class Student{
 class HashTable{
     private:
         Student *buckets[10];
+
         int hash(int n){
             return(n % 10);
         }
@@ -54,6 +54,8 @@ class HashTable{
         }
 
         void insert(){
+            ofstream file("log.txt", ios::app);
+
             int prn;
             cout << "Enter prn: ";
             cin >> prn;
@@ -72,22 +74,50 @@ class HashTable{
             s->next = buckets[h];
             buckets[h] = s;
 
+            file << "prn: " << prn << endl;
+            file << "marks: " << marks << endl;
+            file << "name: " << name << endl << endl;
+
+            file.close();
+
             cout << endl;
         }
 
-        void search(){
+        Student* search(){
             int prn;
             cout << "Enter prn: ";
             cin >> prn;
 
             Student *current = buckets[hash(prn)];
             while(current != nullptr){
-                if(current->)
+                if(current->prn == prn){
+                    cout << "Record exists\n\n";
+                    return(current);
+                }
+
+                current = current->next;
             }
+
+            cout << "Record doesn't exist\n\n";
+            return(nullptr);
         }
 
         void modify(){
+            Student *mod = search();
+            if(mod == nullptr){
+                return;
+            }
 
+            int marks;
+            cout << "Enter new marks: ";
+            cin >> marks;
+
+            string name;
+            cout << "Enter new name: ";
+            cin >> name;
+            
+            mod->marks = marks;
+            mod->name = name;
         }
 
 };
@@ -115,8 +145,13 @@ int main(){
             case 2:
                 ht.insert();
                 break;
+
             case 3:
-                
+                ht.search();
+                break;
+            
+            case 4:
+                ht.modify();
         }
 
         cout << "Perform another operation? y/n: ";
